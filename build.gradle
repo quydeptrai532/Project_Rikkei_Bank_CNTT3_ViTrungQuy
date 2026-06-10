@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.14'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+description = 'rikkeibank'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // 1. Core Web & Validation (Tầng Controller & DTO)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // Dùng cho @Valid, @NotNull trong DTO
+
+    // 2. Database & ORM (Tầng Repository - ACID Transaction)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'// Hibernate & Spring Data JPA
+    runtimeOnly 'com.mysql:mysql-connector-j' // MySQL Driver
+
+    // 3. Security & Authentication (Xác thực JWT & Role-Based Access Control)
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    // Thư viện xử lý JWT (JSON Web Token)
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // 4. Aspect-Oriented Programming (Bắt buộc cho Logging Kiểm toán - UC-04)
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+    // 5. Cloud Storage (Lưu trữ file eKYC - UC-05)
+    // Chọn 1 trong 2 tùy thuộc vào quyết định sử dụng Cloudinary hay AWS S3 của bạn:
+    implementation 'com.cloudinary:cloudinary-http44:1.36.0'
+    // implementation 'software.amazon.awssdk:s3:2.20.40' // Bỏ comment nếu dùng AWS S3 thay vì Cloudinary
+
+    // 6. Tiện ích (Giảm boilerplate code)
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // 7. Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    // Hỗ trợ kết nối Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
