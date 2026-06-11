@@ -1,5 +1,6 @@
 package com.example.rikkeibank.service;
 
+import com.example.rikkeibank.exception.ResourceNotFoundException;
 import com.example.rikkeibank.model.dto.request.UserUpdateRequest;
 import com.example.rikkeibank.model.dto.response.UserResponseDto;
 import com.example.rikkeibank.model.entity.User;
@@ -64,7 +65,7 @@ public class UserService {
     @Transactional
     public void deleteUser(Long id) {
         if (!userRepository.existsById(id)) {
-            throw new RuntimeException("Không tìm thấy người dùng với ID: " + id);
+            throw new ResourceNotFoundException("Không tìm thấy người dùng với ID: " + id);
         }
         userRepository.deleteById(id);
     }

@@ -1,5 +1,6 @@
 package com.example.rikkeibank.service;
 
+import com.example.rikkeibank.exception.BadRequestException;
 import com.example.rikkeibank.model.dto.request.LoginRequest;
 import com.example.rikkeibank.model.dto.request.RegisterRequest;
 import com.example.rikkeibank.model.dto.request.ResetPasswordRequest;
@@ -41,10 +42,10 @@ public class AuthService {
     @Transactional
     public void register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Tên đăng nhập đã tồn tại!");
+            throw new BadRequestException("Tên đăng nhập đã tồn tại!");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email đã được sử dụng!");
+            throw new BadRequestException("Email đã được sử dụng!");
         }
 
         Role userRole = roleRepository.findByName("ROLE_CUSTOMER")
