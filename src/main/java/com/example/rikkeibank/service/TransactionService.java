@@ -1,5 +1,6 @@
 package com.example.rikkeibank.service;
 
+import com.example.rikkeibank.exception.BadRequestException;
 import com.example.rikkeibank.exception.InsufficientBalanceException;
 import com.example.rikkeibank.model.dto.request.TransferRequest;
 import com.example.rikkeibank.model.dto.response.TransactionHistoryResponse;
@@ -30,7 +31,10 @@ public class TransactionService {
         // 1. Tìm tài khoản nguồn theo số tài khoản truyền lên từ Client
         Account fromAccount = accountRepository.findByAccountNumber(request.getFromAccountNumber())
                 .orElseThrow(() -> new RuntimeException("Tài khoản nguồn không tồn tại trên hệ thống."));
-
+        // Check xem User đã KYC chưa
+        if (!fromAccount.getUser().getIsKyc()) {
+            throw new BadRequestException("Tài khoản chưa được định danh (KYC). Vui lòng thực hiện KYC để chuyển tiền.");
+        }
         // BẢO MẬT CỐT LÕI: Kiểm tra tài khoản nguồn có thực sự thuộc về User đang đăng nhập không
         if (!fromAccount.getUser().getId().equals(currentUserId)) {
             throw new RuntimeException("Giao dịch bị từ chối: Bạn không có quyền sử dụng tài khoản nguồn này.");

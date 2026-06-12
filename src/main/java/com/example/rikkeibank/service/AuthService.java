@@ -23,7 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -114,8 +114,7 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("Email không tồn tại trong hệ thống."));
 
         // Sinh mã OTP 6 số ngẫu nhiên
-        String otp = String.format("%06d", new Random().nextInt(999999));
-
+        String otp = String.format("%06d", new SecureRandom().nextInt(999999));
         // Lưu vào Redis, TTL = 5 phút. Key có tiền tố "OTP_"
         redisTemplate.opsForValue().set("OTP_" + email, otp, 5, TimeUnit.MINUTES);
 
