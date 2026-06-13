@@ -41,11 +41,12 @@ public class CustomerTransactionController {
     @GetMapping("/history")
     public ResponseEntity<ApiResponse<Page<TransactionHistoryResponse>>> getTransactionHistory(
             @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam String accountNumber, // YÊU CẦU TRUYỀN SỐ TÀI KHOẢN TỪ URL
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<TransactionHistoryResponse> historyPage = transactionService.getTransactionHistory(userDetails.getId(), pageable);
+        Page<TransactionHistoryResponse> historyPage = transactionService.getTransactionHistory(userDetails.getId(), accountNumber, pageable);
 
         return ResponseEntity.ok(ApiResponse.<Page<TransactionHistoryResponse>>builder()
                 .success(true)
